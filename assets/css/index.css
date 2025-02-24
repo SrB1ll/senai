@@ -1,0 +1,214 @@
+/* Variáveis globais */
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --transition: all 0.3s ease;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --border-radius: 10px;
+    --border-radius-lg: 15px;
+    --gray-100: #f8f9fa;
+    --gray-900: #212529;
+    --gray-600: #6c757d;
+}
+
+/* Reset e estilos base */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--gray-100);
+    color: var(--dark-color);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #0099ff 100%);
+    color: white;
+    padding: 6rem 0;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::after {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: var(--light-color);
+    transform: skewY(-3deg);
+}
+
+/* Cards */
+.feature-card {
+    border: none;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    box-shadow: var(--shadow);
+    background: white;
+    overflow: hidden;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Formulários */
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #dee2e6;
+    transition: var(--transition);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+}
+
+/* Botões */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    transition: var(--transition);
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    border: none;
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
+}
+
+/* Cards de acesso */
+.access-card {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: 2rem;
+    text-align: center;
+    transition: var(--transition);
+    border: 2px solid transparent;
+    cursor: pointer;
+    height: 100%;
+}
+
+.access-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Ícones */
+.access-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+}
+
+.student-icon {
+    color: var(--primary-color);
+}
+
+.instructor-icon {
+    color: var(--success-color);
+}
+
+/* Textos */
+.access-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--gray-900);
+}
+
+.access-description {
+    color: var(--gray-600);
+    margin-bottom: 1.5rem;
+}
+
+/* Logo */
+.logo-container {
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.logo-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+}
+
+.logo-text {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .logo-text {
+        font-size: 1.5rem;
+    }
+
+    .access-card {
+        padding: 1.5rem;
+    }
+
+    .access-icon {
+        font-size: 2.5rem;
+    }
+}
+
+/* Animações */
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.access-card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Botão COPED */
+.coped-access {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: var(--shadow);
+}
+
+.coped-access:hover {
+    opacity: 1;
+    background-color: white;
+    box-shadow: var(--shadow-lg);
+}
