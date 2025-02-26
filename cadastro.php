@@ -48,6 +48,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->execute();
         $result = $stmt->get_result();
 
+        // Verificar se existe reserva de sala no mesmo horário
+        $sql_verificar_sala = "SELECT id FROM reservas_sala 
+                              WHERE DATE(inicio) = ? 
+                              AND ((inicio <= ? AND fim > ?) 
+                              OR (inicio < ? AND fim >= ?))
+                              AND status = 'aprovado'";
+        
+        $stmt = $conn->prepare($sql_verificar_sala);
+        $stmt->bind_param("sssss", $data, $datetime_inicio, $datetime_inicio, $datetime_fim, $datetime_fim);
+        $stmt->execute();
+        $result_sala = $stmt->get_result();
+        
+        if ($result_sala->num_rows > 0) {
+            throw new Exception("Este horário está reservado para uso da sala pelo instrutor.");
+        }
+
         // Selecionar computador disponível
         $sql_computador = "SELECT computador_num FROM computadores 
                           WHERE status = 'livre' 

@@ -19,6 +19,18 @@
     transform: skewY(-3deg);
 }
 
+/* Título e subtítulo do hero */
+.hero-section h1 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.hero-section h2 {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
 /* Cards */
 .feature-card {
     border: none;

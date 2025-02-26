@@ -12,8 +12,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             throw new Exception("Todos os campos são obrigatórios.");
         }
 
-        $sql = "INSERT INTO contatos (nome, email, assunto, mensagem) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO mensagens (nome, email, assunto, mensagem) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Erro ao preparar consulta: " . $conn->error);
+        }
+        
         $stmt->bind_param("ssss", $nome, $email, $assunto, $mensagem);
         
         if ($stmt->execute()) {
@@ -22,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 'message' => 'Mensagem enviada com sucesso!'
             ]);
         } else {
-            throw new Exception("Erro ao enviar mensagem.");
+            throw new Exception("Erro ao enviar mensagem: " . $stmt->error);
         }
 
     } catch (Exception $e) {

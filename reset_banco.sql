@@ -16,7 +16,8 @@ CREATE TABLE coped_usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL
+    senha VARCHAR(255) NOT NULL,
+    status ENUM('ativo', 'inativo') DEFAULT 'ativo'
 );
 
 -- Tabela de computadores
@@ -53,6 +54,17 @@ CREATE TABLE reservas_sala (
     FOREIGN KEY (professor_id) REFERENCES professores(id)
 );
 
+-- Tabela de mensagens de contato
+CREATE TABLE mensagens (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    assunto VARCHAR(200) NOT NULL,
+    mensagem TEXT NOT NULL,
+    data_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('não_lida', 'lida') DEFAULT 'não_lida'
+);
+
 -- Inserir computadores iniciais
 INSERT INTO computadores (computador_num, status) VALUES 
 (1, 'livre'), (2, 'livre'), (3, 'livre'), (4, 'livre'), (5, 'livre'),
@@ -68,4 +80,7 @@ INSERT INTO coped_usuarios (nome, email, senha) VALUES
 
 -- Senhas dos usuários acima:
 -- instrutor@lab.com: instrutor123
--- admin@coped.com: coped123 
+-- admin@coped.com: coped123
+
+-- Atualizar a estrutura da tabela coped_usuarios
+ALTER TABLE coped_usuarios ADD COLUMN status ENUM('ativo', 'inativo') DEFAULT 'ativo'; 

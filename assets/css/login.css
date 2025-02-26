@@ -205,6 +205,83 @@ body {
     color: #3498db;
 }
 
+/* Animações */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* Alerta personalizado */
+.alert {
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    color: #1f2937;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid #dc2626;
+    transition: all 0.3s ease;
+    margin-bottom: 2rem;
+    max-width: 100%;
+    width: 100%;
+}
+
+.alert i {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+    color: #dc2626;
+    flex-shrink: 0;
+}
+
+.alert span {
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+/* Efeito hover no alerta */
+.alert:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* Animação do alerta */
+@keyframes slideDown {
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.alert.show {
+    animation: slideDown 0.3s ease forwards;
+}
+
+/* Barra de progresso do alerta */
+.alert-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background-color: #dc2626;
+    width: 100%;
+    transform-origin: left;
+    animation: progress 5s linear;
+}
+
+@keyframes progress {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
 /* Responsividade */
 @media (max-width: 1200px) {
     .banner-content h1 {

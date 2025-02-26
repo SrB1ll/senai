@@ -26,10 +26,40 @@ document.addEventListener('DOMContentLoaded', function() {
         const today = new Date().toISOString().split('T')[0];
         dataInput.min = today;
         
+        // Validação adicional no envio do formulário
+        dataInput.addEventListener('change', function() {
+            const selectedDate = new Date(this.value);
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            if (selectedDate < today) {
+                alert('Por favor, selecione uma data futura.');
+                this.value = '';
+            }
+        });
+        
         // Máximo 30 dias no futuro
         const maxDate = new Date();
         maxDate.setDate(maxDate.getDate() + 30);
         dataInput.max = maxDate.toISOString().split('T')[0];
+    }
+
+    // Data mínima para agendamentos do instrutor
+    const dataInstrutor = document.getElementById('data');
+    if (dataInstrutor) {
+        const today = new Date().toISOString().split('T')[0];
+        dataInstrutor.min = today;
+        
+        dataInstrutor.addEventListener('change', function() {
+            const selectedDate = new Date(this.value);
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            if (selectedDate < today) {
+                alert('Por favor, selecione uma data futura.');
+                this.value = '';
+            }
+        });
     }
 
     // Toast notifications

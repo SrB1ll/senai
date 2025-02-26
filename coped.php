@@ -1,6 +1,37 @@
 <?php
 session_start();
+
+// Verificação estrita de autenticação
+if (!isset($_SESSION['coped_id']) || !isset($_SESSION['coped_nome'])) {
+    // Limpar qualquer sessão existente
+    session_unset();
+    session_destroy();
+    
+    // Redirecionar para login com mensagem de erro
+    header('Location: coped_login.php?error=unauthorized');
+    exit();
+}
+
 require_once 'conexao.php';
+
+// Verificação adicional de segurança
+$sql_usuario = "SELECT id, nome FROM coped_usuarios WHERE id = ? AND status = 'ativo' LIMIT 1";
+$stmt = $conn->prepare($sql_usuario);
+$stmt->bind_param("i", $_SESSION['coped_id']);
+$stmt->execute();
+$result = $stmt->get_result();
+$usuario = $result->fetch_assoc();
+
+// Se não encontrar o usuário ou estiver inativo
+if (!$usuario) {
+    session_unset();
+    session_destroy();
+    header('Location: coped_login.php?error=invalid');
+    exit();
+}
+
+// Atualizar a sessão com os dados mais recentes
+$_SESSION['coped_nome'] = $usuario['nome'];
 
 try {
     // Buscar todas as reservas pendentes
@@ -52,10 +83,14 @@ try {
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="index.php">
-                <i class="bi bi-pc-display"></i> LabReservas
+                <img src="assets/img/logo.png" alt="S.A.S.E Logo" class="navbar-logo me-2" style="height: 30px;">
+                S.A.S.E
             </a>
             <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="index.php">
+                <span class="nav-item nav-link text-muted">
+                    <i class="bi bi-person"></i> <?php echo htmlspecialchars($_SESSION['coped_nome']); ?>
+                </span>
+                <a class="nav-link" href="logout.php">
                     <i class="bi bi-box-arrow-left"></i> Sair
                 </a>
             </div>
@@ -64,6 +99,71 @@ try {
 
     <div class="container my-5">
         <h2 class="mb-4">Painel de Controle COPED</h2>
+
+        <!-- Mensagens de Contato -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Mensagens de Contato</h5>
+                <span class="badge bg-light text-primary" id="novas-mensagens">
+                    <?php
+                    $sql_count = "SELECT COUNT(*) as total FROM mensagens WHERE status = 'não_lida'";
+                    $result_count = $conn->query($sql_count);
+                    $count = $result_count->fetch_assoc();
+                    echo $count['total'] . " nova(s)";
+                    ?>
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Assunto</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $sql_mensagens = "SELECT * FROM mensagens ORDER BY data_envio DESC";
+                            $result_mensagens = $conn->query($sql_mensagens);
+
+                            if ($result_mensagens && $result_mensagens->num_rows > 0):
+                                while($msg = $result_mensagens->fetch_assoc()):
+                            ?>
+                            <tr>
+                                <td><?php echo date('d/m/Y H:i', strtotime($msg['data_envio'])); ?></td>
+                                <td><?php echo htmlspecialchars($msg['nome']); ?></td>
+                                <td><?php echo htmlspecialchars($msg['email']); ?></td>
+                                <td><?php echo htmlspecialchars($msg['assunto']); ?></td>
+                                <td>
+                                    <span class="badge bg-<?php echo $msg['status'] == 'não_lida' ? 'danger' : 'success'; ?>">
+                                        <?php echo $msg['status']; ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" 
+                                            onclick="verMensagem(<?php echo $msg['id']; ?>)">
+                                        <i class="bi bi-envelope-open"></i> 
+                                    </button>
+                                </td>
+                            </tr>
+                            <?php 
+                                endwhile;
+                            else:
+                            ?>
+                            <tr>
+                                <td colspan="6" class="text-center">Nenhuma mensagem recebida</td>
+                            </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
         <!-- Reservas de Sala (Instrutores) -->
         <div class="card mb-4">
@@ -176,10 +276,10 @@ try {
             </div>
         </div>
 
-        <!-- Lista de Usuários Registrados -->
+        <!-- Lista de reservas aprovadas -->
         <div class="card mb-4">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Usuários Registrados</h5>
+                <h5 class="mb-0">Reservas Aprovadas</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -261,6 +361,23 @@ try {
         </div>
     </div>
 
+    <!-- Modal de Visualização de Mensagem -->
+    <div class="modal fade" id="mensagemModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Mensagem</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="mensagem-content">
+                        <!-- Conteúdo será carregado via AJAX -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     function aprovarReserva(id) {
@@ -301,6 +418,30 @@ try {
                 }
             });
         }
+    }
+
+    function verMensagem(id) {
+        fetch('ver_mensagem.php?id=' + id)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('mensagem-content').innerHTML = `
+                        <div class="mb-3">
+                            <strong>De:</strong> ${data.mensagem.nome} (${data.mensagem.email})
+                        </div>
+                        <div class="mb-3">
+                            <strong>Assunto:</strong> ${data.mensagem.assunto}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Data:</strong> ${data.mensagem.data_formatada}
+                        </div>
+                        <div class="mensagem-texto p-3 bg-light rounded">
+                            ${data.mensagem.mensagem}
+                        </div>
+                    `;
+                    new bootstrap.Modal(document.getElementById('mensagemModal')).show();
+                }
+            });
     }
     </script>
 </body>

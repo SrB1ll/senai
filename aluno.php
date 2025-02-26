@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Área do Aluno - Sistema de Reservas</title>
+    <title>Área do Aluno - S.A.S.E</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link href="assets/css/variables.css" rel="stylesheet">
@@ -15,7 +15,9 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="index.php">
-                <i class="bi bi-pc-display"></i> LabReservas
+                <img src="assets/img/logo.png" alt="S.A.S.E Logo" class="navbar-logo me-2" style="height: 30px;">
+                S.A.S.E
+                <span class="navbar-text small ms-2 text-muted">Sistema de Agendamento de Sala de Estudos</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -42,7 +44,8 @@
     <section class="hero-section">
         <div class="container text-center">
             <i class="bi bi-mortarboard-fill display-1 mb-4"></i>
-            <h1 class="display-4 mb-4">Área do Aluno</h1>
+            <h1 class="display-4 mb-4">S.A.S.E</h1>
+            <h2 class="h3 text-muted mb-4">Sistema de Agendamento de Sala de Estudos</h2>
             <p class="lead mb-4">Reserve seu computador no laboratório de forma rápida e simples</p>
         </div>
     </section>
@@ -81,23 +84,87 @@
                             </div>
                             <div class="mb-3">
                                 <label for="data_pesquisa" class="form-label">Data</label>
-                                <input type="date" class="form-control" id="data_pesquisa" name="data_pesquisa" required>
+                                <input type="date" class="form-control" id="data_pesquisa" name="data_pesquisa" 
+                                       min="<?php echo date('Y-m-d'); ?>" required>
                             </div>
                             <div class="mb-3">
                                 <label for="inicio" class="form-label">Horário</label>
+                                <?php
+                                require_once 'conexao.php';
+                                
+                                function getHorariosDisponiveis($data) {
+                                    global $conn;
+                                    
+                                    // Todos os horários possíveis
+                                    $horarios = [
+                                        '08:00', '09:00', '10:00', '11:00', 
+                                        '14:00', '15:00', '16:00', '17:00',
+                                        '19:00', '20:00', '21:00'
+                                    ];
+                                    
+                                    // Horários ocupados por reservas de alunos
+                                    $sql = "SELECT TIME_FORMAT(inicio, '%H:%i') as hora 
+                                           FROM reservas 
+                                           WHERE DATE(inicio) = ? 
+                                           AND status != 'recusado'";
+                                    
+                                    $stmt = $conn->prepare($sql);
+                                    $stmt->bind_param("s", $data);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    
+                                    $horarios_ocupados = [];
+                                    while($row = $result->fetch_assoc()) {
+                                        $horarios_ocupados[] = $row['hora'];
+                                    }
+                                    
+                                    // Horários ocupados por reservas de sala
+                                    $sql = "SELECT TIME_FORMAT(inicio, '%H:%i') as inicio, 
+                                                  TIME_FORMAT(fim, '%H:%i') as fim 
+                                           FROM reservas_sala 
+                                           WHERE DATE(inicio) = ? 
+                                           AND status = 'aprovado'";
+                                    
+                                    $stmt = $conn->prepare($sql);
+                                    $stmt->bind_param("s", $data);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    
+                                    while($row = $result->fetch_assoc()) {
+                                        $inicio = strtotime($row['inicio']);
+                                        $fim = strtotime($row['fim']);
+                                        
+                                        foreach($horarios as $horario) {
+                                            $hora = strtotime($horario);
+                                            if ($hora >= $inicio && $hora < $fim) {
+                                                $horarios_ocupados[] = $horario;
+                                            }
+                                        }
+                                    }
+                                    
+                                    // Remover horários que já passaram hoje
+                                    if ($data == date('Y-m-d')) {
+                                        $hora_atual = date('H:i');
+                                        foreach($horarios as $key => $horario) {
+                                            if ($horario <= $hora_atual) {
+                                                $horarios_ocupados[] = $horario;
+                                            }
+                                        }
+                                    }
+                                    
+                                    // Filtrar horários disponíveis
+                                    return array_diff($horarios, array_unique($horarios_ocupados));
+                                }
+                                ?>
                                 <select class="form-select" id="inicio" name="inicio" required>
                                     <option value="">Selecione o horário</option>
-                                    <option value="08:00">08:00</option>
-                                    <option value="09:00">09:00</option>
-                                    <option value="10:00">10:00</option>
-                                    <option value="11:00">11:00</option>
-                                    <option value="14:00">14:00</option>
-                                    <option value="15:00">15:00</option>
-                                    <option value="16:00">16:00</option>
-                                    <option value="17:00">17:00</option>
-                                    <option value="19:00">19:00</option>
-                                    <option value="20:00">20:00</option>
-                                    <option value="21:00">21:00</option>
+                                    <?php
+                                    $data_selecionada = date('Y-m-d');
+                                    $horarios_disponiveis = getHorariosDisponiveis($data_selecionada);
+                                    
+                                    foreach($horarios_disponiveis as $horario): ?>
+                                        <option value="<?php echo $horario; ?>"><?php echo $horario; ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary w-100" id="btnReservar">
@@ -176,6 +243,47 @@
             btnText.textContent = 'Reservar Agora';
             btn.disabled = false;
         });
+    });
+
+    document.getElementById('data_pesquisa').addEventListener('change', function() {
+        const data = this.value;
+        const select = document.getElementById('inicio');
+        
+        if (!data) return; // Se não houver data selecionada, não faz nada
+        
+        // Desabilitar o select enquanto carrega
+        select.disabled = true;
+        
+        // Buscar horários disponíveis via AJAX
+        fetch(`get_horarios.php?data=${data}`)
+            .then(response => response.json())
+            .then(horarios => {
+                // Limpar opções atuais
+                select.innerHTML = '<option value="">Selecione o horário</option>';
+                
+                if (horarios.length === 0) {
+                    const option = document.createElement('option');
+                    option.value = "";
+                    option.textContent = "Nenhum horário disponível";
+                    select.appendChild(option);
+                } else {
+                    // Adicionar novos horários
+                    horarios.forEach(horario => {
+                        const option = document.createElement('option');
+                        option.value = horario;
+                        option.textContent = horario;
+                        select.appendChild(option);
+                    });
+                }
+                
+                // Reabilitar o select
+                select.disabled = false;
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                select.innerHTML = '<option value="">Erro ao carregar horários</option>';
+                select.disabled = false;
+            });
     });
     </script>
 </body>

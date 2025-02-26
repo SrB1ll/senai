@@ -28,15 +28,48 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
         if (data.success) {
             window.location.href = data.redirect;
         } else {
-            alert(data.message);
-            spinner.classList.add('d-none');
-            btnText.textContent = 'Entrar';
-            btn.disabled = false;
+            const alertBox = document.getElementById('loginAlert');
+            const alertMessage = document.getElementById('loginAlertMessage');
+            
+            // Esconder alerta existente antes de mostrar novo
+            alertBox.classList.add('d-none');
+            
+            // Forçar reflow para reiniciar animação
+            void alertBox.offsetWidth;
+            
+            alertMessage.textContent = data.message;
+            alertBox.classList.add('show');
+            alertBox.classList.remove('d-none');
+            
+            // Animar o alerta
+            alertBox.style.animation = 'shake 0.5s ease-in-out';
+            setTimeout(() => {
+                alertBox.style.animation = '';
+            }, 500);
+            
+            // Limpar o campo de senha
+            document.getElementById('senha').value = '';
+            document.getElementById('senha').focus();
+            
+            // Auto-ocultar após 5 segundos
+            setTimeout(() => {
+                alertBox.style.animation = 'slideDown 0.3s ease reverse';
+                setTimeout(() => {
+                    alertBox.classList.add('d-none');
+                }, 300);
+            }, 5000);
         }
+        spinner.classList.add('d-none');
+        btnText.textContent = 'Entrar';
+        btn.disabled = false;
     })
     .catch(error => {
         console.error('Erro:', error);
-        alert('Erro ao processar login. Por favor, tente novamente.');
+        const alertBox = document.getElementById('loginAlert');
+        const alertMessage = document.getElementById('loginAlertMessage');
+        alertMessage.textContent = 'Erro ao processar login. Por favor, tente novamente.';
+        alertBox.classList.remove('d-none');
+        alertBox.style.animation = 'shake 0.5s ease-in-out';
         spinner.classList.add('d-none');
         btnText.textContent = 'Entrar';
         btn.disabled = false;

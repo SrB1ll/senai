@@ -11,6 +11,10 @@
     <link href="assets/css/index.css" rel="stylesheet">
     <link href="assets/css/contato.css" rel="stylesheet">
     <style>
+        body {
+            background: linear-gradient(135deg,rgb(227, 223, 238) 0%,rgb(229, 227, 243) 100%);
+            min-height: 100vh;
+        }
         .coped-access {
             position: fixed;
             top: 1rem;
@@ -20,6 +24,38 @@
         }
         .coped-access:hover {
             opacity: 1;
+        }
+        /* Cor azul para os ícones */
+        .logo-icon,
+        .student-icon,
+        .instructor-icon {
+            color: #0d6efd !important;
+        }
+        /* Cor azul para os títulos dos cards */
+        .access-title {
+            color: #0d6efd !important;
+        }
+        /* Cor azul para o título principal */
+        .logo-text {
+            color: #0d6efd !important;
+            margin-bottom: 0.2rem;
+        }
+        /* Estilo para o subtítulo */
+        .logo-container p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0;
+        }
+        /* Cards com borda e sombra suave */
+        .access-card {
+            background: white;
+            border: 1px solid rgba(13, 110, 253, 0.1);
+            box-shadow: 0 4px 6px rgba(13, 110, 253, 0.05);
+        }
+        /* Hover efeito nos cards */
+        .access-card:hover {
+            border-color: rgba(13, 110, 253, 0.3);
+            box-shadow: 0 8px 15px rgba(13, 110, 253, 0.1);
         }
     </style>
 </head>
@@ -33,14 +69,9 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="logo-container">
-                    <i class="bi bi-pc-display logo-icon"></i>
-                    <h1 class="logo-text">Sistema de Reservas</h1>
-                </div>
-                
-                <div class="text-end mb-4">
-                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#contatoModal">
-                        <i class="bi bi-envelope"></i> Contato
-                    </button>
+                    <img src="assets/img/logo.png" alt="S.A.S.E Logo" class="logo-img mb-3" style="height: 80px;">
+                    <h1 class="logo-text">S.A.S.E</h1>
+                    <p class="text-muted small">Sistema de Agendamento de Sala de Estudos</p>
                 </div>
                 
                 <h2 class="text-center mb-4">Selecione seu tipo de acesso</h2>
@@ -67,6 +98,13 @@
                             </div>
                         </a>
                     </div>
+                </div>
+
+                <!-- Botão de Contato -->
+                <div class="text-center mt-5">
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#contatoModal">
+                        <i class="bi bi-envelope"></i> Contato
+                    </button>
                 </div>
             </div>
         </div>
@@ -139,7 +177,8 @@
             btn.disabled = false;
         })
         .catch(error => {
-            alert('Erro ao enviar mensagem');
+            console.error('Erro:', error);
+            alert('Erro ao enviar mensagem. Por favor, tente novamente.');
             spinner.classList.add('d-none');
             btnText.textContent = 'Enviar Mensagem';
             btn.disabled = false;

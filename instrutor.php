@@ -40,7 +40,7 @@ error_log("Nome do professor: " . $_SESSION['professor_nome']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Área do Instrutor - Sistema de Reservas</title>
+    <title>Área do Instrutor - S.A.S.E</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -53,7 +53,9 @@ error_log("Nome do professor: " . $_SESSION['professor_nome']);
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="index.php">
-                <i class="bi bi-pc-display"></i> LabReservas
+                <img src="assets/img/logo.png" alt="S.A.S.E Logo" class="navbar-logo me-2" style="height: 30px;">
+                S.A.S.E
+                <span class="navbar-text small ms-2 text-white-50">Sistema de Agendamento de Sala de Estudos</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -76,7 +78,8 @@ error_log("Nome do professor: " . $_SESSION['professor_nome']);
             <div class="hero-icon mb-4">
                 <i class="bi bi-person-workspace"></i>
             </div>
-            <h1 class="display-4 mb-4">Área do Instrutor</h1>
+            <h1 class="display-4 mb-4">S.A.S.E</h1>
+            <h2 class="h3 mb-4">Sistema de Agendamento de Sala de Estudos</h2>
             <p class="lead mb-4">Gerencie as reservas e computadores da sala de estudos</p>
         </div>
     </section>
@@ -182,7 +185,8 @@ error_log("Nome do professor: " . $_SESSION['professor_nome']);
                             <div class="row mb-4">
                                 <div class="col-md-4">
                                     <label for="data" class="form-label">Data</label>
-                                    <input type="date" class="form-control form-control-lg" id="data" name="data" required>
+                                    <input type="date" class="form-control form-control-lg" id="data" name="data" 
+                                           min="<?php echo date('Y-m-d'); ?>" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="inicio" class="form-label">Horário Início</label>

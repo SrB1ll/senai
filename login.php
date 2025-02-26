@@ -52,9 +52,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     } catch (Exception $e) {
         error_log("Erro no login: " . $e->getMessage());
+        $mensagem_erro = match($e->getMessage()) {
+            "Email ou senha incorretos" => "Credenciais inválidas. Por favor, verifique seu email e senha.",
+            "Preencha todos os campos" => "Por favor, preencha todos os campos.",
+            default => "Ocorreu um erro ao tentar fazer login. Tente novamente."
+        };
         echo json_encode([
             'success' => false,
-            'message' => $e->getMessage()
+            'message' => $mensagem_erro
         ]);
         exit;
     }
@@ -66,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Sistema de Reservas</title>
+    <title>Login - S.A.S.E</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link href="assets/css/variables.css" rel="stylesheet">
@@ -78,7 +83,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <!-- Banner Lado Esquerdo -->
         <div class="login-banner">
             <div class="banner-content">
-                <h1>Sistema de Reservas de Sala de Estudos</h1>
+                <img src="assets/img/logo.png" alt="S.A.S.E Logo" class="mb-4" style="height: 100px;">
+                <h1>S.A.S.E</h1>
+                <h2 class="h4 mt-3">Sistema de Agendamento de Sala de Estudos</h2>
                 <p>Gerencie as reservas e computadores do laboratório de forma eficiente e organizada.</p>
             </div>
         </div>
@@ -89,7 +96,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="login-header">
                     <i class="bi bi-person-workspace login-icon"></i>
                     <h2>Login do Instrutor</h2>
-                    <p>Faça login para acessar o sistema</p>
+                    <p>Faça login para acessar o S.A.S.E</p>
+                </div>
+
+                <!-- Área de mensagens de erro -->
+                <div id="loginAlert" class="alert d-none" role="alert">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    <div>
+                        <span id="loginAlertMessage"></span>
+                        <div class="alert-progress"></div>
+                    </div>
                 </div>
 
                 <form id="loginForm" method="POST" class="needs-validation" novalidate>

@@ -65,8 +65,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <h2 class="text-center mb-4">Consulta de Reservas</h2>
 
                         <?php if ($mensagem): ?>
-                            <div class="alert alert-warning" role="alert">
+                            <div class="alert alert-warning text-center mb-4" role="alert">
                                 <?php echo $mensagem; ?>
+                            </div>
+                            <div class="text-center">
+                                <a href="aluno.php" class="btn btn-primary">
+                                    <i class="bi bi-arrow-left"></i> Voltar
+                                </a>
                             </div>
                         <?php endif; ?>
 
