@@ -12,8 +12,9 @@
     <link href="assets/css/contato.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg,rgb(227, 223, 238) 0%,rgb(229, 227, 243) 100%);
+            background: linear-gradient(135deg, #f6f7ff 0%, #e9eeff 100%);
             min-height: 100vh;
+            padding: 2rem 0;
         }
         .coped-access {
             position: fixed;
@@ -48,14 +49,96 @@
         }
         /* Cards com borda e sombra suave */
         .access-card {
-            background: white;
-            border: 1px solid rgba(13, 110, 253, 0.1);
-            box-shadow: 0 4px 6px rgba(13, 110, 253, 0.05);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(37, 99, 235, 0.1);
+            height: 100%;
         }
         /* Hover efeito nos cards */
         .access-card:hover {
-            border-color: rgba(13, 110, 253, 0.3);
-            box-shadow: 0 8px 15px rgba(13, 110, 253, 0.1);
+            transform: translateY(-5px);
+            border-color: rgba(37, 99, 235, 0.3);
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.1);
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+        .logo-img {
+            height: 90px;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        }
+        .logo-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            color: #6b7280;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+        .access-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: #2563eb;
+            transition: transform 0.3s ease;
+        }
+        .access-card:hover .access-icon {
+            transform: scale(1.1);
+        }
+        .access-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        .access-description {
+            color: #6b7280;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+        .contact-btn {
+            margin-top: 4rem;
+            padding: 0.75rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
+        }
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .row {
+            animation: fadeInUp 0.8s ease-out;
         }
     </style>
 </head>
@@ -69,19 +152,17 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="logo-container">
-                    <img src="assets/img/logo.png" alt="S.A.S.E Logo" class="logo-img mb-3" style="height: 80px;">
+                    <img src="assets/img/logo.png" alt="S.A.S.E Logo" class="logo-img">
                     <h1 class="logo-text">S.A.S.E</h1>
-                    <p class="text-muted small">Sistema de Agendamento de Sala de Estudos</p>
+                    <p class="subtitle">Sistema de Agendamento de Sala de Estudos</p>
                 </div>
-                
-                <h2 class="text-center mb-4">Selecione seu tipo de acesso</h2>
                 
                 <div class="row g-4">
                     <!-- Card Aluno -->
                     <div class="col-md-6">
                         <a href="aluno.php" class="text-decoration-none">
                             <div class="access-card">
-                                <i class="bi bi-mortarboard-fill access-icon student-icon"></i>
+                                <i class="bi bi-mortarboard-fill access-icon"></i>
                                 <h3 class="access-title">Aluno</h3>
                                 <p class="access-description">Acesso para reserva de computadores</p>
                             </div>
@@ -92,7 +173,7 @@
                     <div class="col-md-6">
                         <a href="login.php" class="text-decoration-none">
                             <div class="access-card">
-                                <i class="bi bi-person-workspace access-icon instructor-icon"></i>
+                                <i class="bi bi-person-workspace access-icon"></i>
                                 <h3 class="access-title">Instrutor</h3>
                                 <p class="access-description">Acesso para gerenciamento</p>
                             </div>
@@ -101,8 +182,8 @@
                 </div>
 
                 <!-- Botão de Contato -->
-                <div class="text-center mt-5">
-                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#contatoModal">
+                <div class="text-center">
+                    <button class="btn btn-outline-primary contact-btn" data-bs-toggle="modal" data-bs-target="#contatoModal">
                         <i class="bi bi-envelope"></i> Contato
                     </button>
                 </div>

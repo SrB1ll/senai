@@ -55,4 +55,17 @@
     --z-index-fixed: 1030;
     --z-index-modal: 1040;
     --z-index-toast: 1050;
+    
+    /* Variáveis para tema claro/escuro */
+    --bg-primary: #f6f7ff;
+    --bg-secondary: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+}
+
+[data-theme="dark"] {
+    --bg-primary: #111827;
+    --bg-secondary: #1f2937;
+    --text-primary: #f3f4f6;
+    --text-secondary: #9ca3af;
 } 
